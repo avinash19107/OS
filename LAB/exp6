@@ -1,0 +1,76 @@
+
+#include <stdio.h>
+
+int main() {
+    int n, at[20], bt[20], pr[20], rem[20], ct[20];
+    int time = 0, completed = 0;
+    float avgWT = 0, avgTAT = 0;
+
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+
+    if (n <= 0 || n > 20) {
+        printf("Invalid number of processes\n");
+        return 1;
+    }
+
+    for (int i = 0; i < n; i++) {
+        printf("Enter arrival time, burst time and priority of P%d: ",
+               i + 1);
+        scanf("%d%d%d", &at[i], &bt[i], &pr[i]);
+
+        if (at[i] < 0 || bt[i] <= 0 || pr[i] < 0) {
+            printf("Invalid input\n");
+            return 1;
+        }
+
+        rem[i] = bt[i];
+        ct[i] = 0;
+    }
+
+    while (completed < n) {
+        int idx = -1;
+
+        // Find highest-priority arrived process
+        for (int i = 0; i < n; i++) {
+            if (at[i] <= time && rem[i] > 0) {
+                if (idx == -1 || pr[i] < pr[idx]) {
+                    idx = i;
+                }
+            }
+        }
+
+        if (idx == -1) {
+            time++;
+            continue;
+        }
+
+        // Execute for one time unit
+        rem[idx]--;
+        time++;
+
+        if (rem[idx] == 0) {
+            ct[idx] = time;
+            completed++;
+        }
+    }
+
+    printf("\nProcess\tAT\tBT\tPriority\tCT\tTAT\tWT\n");
+
+    for (int i = 0; i < n; i++) {
+        int tat = ct[i] - at[i];
+        int wt = tat - bt[i];
+
+        avgTAT += tat;
+        avgWT += wt;
+
+        printf("P%d\t%d\t%d\t%d\t\t%d\t%d\t%d\n",
+               i + 1, at[i], bt[i], pr[i],
+               ct[i], tat, wt);
+    }
+
+    printf("\nAverage Waiting Time = %.2f\n", avgWT / n);
+    printf("Average Turnaround Time = %.2f\n", avgTAT / n);
+
+    return 0;
+}
