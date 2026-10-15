@@ -1,0 +1,89 @@
+
+#include <stdio.h>
+
+int main() {
+    int n, quantum;
+    int at[20], bt[20], rem[20], ct[20];
+    int time = 0, completed = 0;
+    float avgWT = 0, avgTAT = 0;
+
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+
+    if (n <= 0 || n > 20) {
+        printf("Invalid number of processes\n");
+        return 1;
+    }
+
+    for (int i = 0; i < n; i++) {
+        printf("Enter arrival time and burst time of P%d: ", i + 1);
+        scanf("%d%d", &at[i], &bt[i]);
+
+        if (at[i] < 0 || bt[i] <= 0) {
+            printf("Invalid input\n");
+            return 1;
+        }
+
+        rem[i] = bt[i];
+        ct[i] = 0;
+    }
+
+    printf("Enter time quantum: ");
+    scanf("%d", &quantum);
+
+    if (quantum <= 0) {
+        printf("Invalid time quantum\n");
+        return 1;
+    }
+
+    while (completed < n) {
+        int executed = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (at[i] <= time && rem[i] > 0) {
+                executed = 1;
+
+                if (rem[i] > quantum) {
+                    time += quantum;
+                    rem[i] -= quantum;
+                } else {
+                    time += rem[i];
+                    rem[i] = 0;
+                    ct[i] = time;
+                    completed++;
+                }
+
+                /* Allow newly arrived processes to join
+                   the next round. */
+                for (int j = 0; j < n; j++) {
+                    if (at[j] > time - quantum &&
+                        at[j] <= time && rem[j] > 0) {
+                        /* Arrival is handled by the next scan. */
+                    }
+                }
+            }
+        }
+
+        if (!executed) {
+            time++;
+        }
+    }
+
+    printf("\nProcess\tAT\tBT\tCT\tTAT\tWT\n");
+
+    for (int i = 0; i < n; i++) {
+        int tat = ct[i] - at[i];
+        int wt = tat - bt[i];
+
+        avgTAT += tat;
+        avgWT += wt;
+
+        printf("P%d\t%d\t%d\t%d\t%d\t%d\n",
+               i + 1, at[i], bt[i], ct[i], tat, wt);
+    }
+
+    printf("\nAverage Waiting Time = %.2f\n", avgWT / n);
+    printf("Average Turnaround Time = %.2f\n", avgTAT / n);
+
+    return 0;
+}
