@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main()
+{
+    int fd;
+    char buffer[100];
+    char text[] = "Hello, UNIX File Management!";
+
+    /* Create a file */
+    fd = creat("sample.txt", 0644);
+
+    if (fd < 0)
+    {
+        perror("File creation failed");
+        return 1;
+    }
+
+    printf("File created successfully.\n");
+    close(fd);
+
+    /* Open file for writing */
+    fd = open("sample.txt", O_WRONLY);
+
+    if (fd < 0)
+    {
+        perror("File opening failed");
+        return 1;
+    }
+
+    write(fd, text, sizeof(text) - 1);
+    printf("Data written successfully.\n");
+    close(fd);
+
+    /* Open file for reading */
+    fd = open("sample.txt", O_RDONLY);
+
+    if (fd < 0)
+    {
+        perror("File opening failed");
+        return 1;
+    }
+
+    int n = read(fd, buffer, sizeof(buffer) - 1);
+
+    if (n >= 0)
+    {
+        buffer[n] = '\0';
+        printf("File contents: %s\n", buffer);
+    }
+
+    close(fd);
+
+    printf("File closed successfully.\n");
+
+    return 0;
+}
