@@ -1,0 +1,103 @@
+
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char files[20][30];
+    char name[30];
+    int n = 0, choice, found;
+
+    while (1) {
+        printf("\n--- Single Level Directory ---\n");
+        printf("1. Create File\n");
+        printf("2. Search File\n");
+        printf("3. Delete File\n");
+        printf("4. Display Files\n");
+        printf("5. Exit\n");
+
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter file name: ");
+                scanf("%29s", name);
+
+                found = 0;
+                for (int i = 0; i < n; i++) {
+                    if (strcmp(files[i], name) == 0) {
+                        found = 1;
+                        break;
+                    }
+                }
+
+                if (found) {
+                    printf("File already exists!\n");
+                } else if (n < 20) {
+                    strcpy(files[n], name);
+                    n++;
+                    printf("File created successfully.\n");
+                } else {
+                    printf("Directory is full.\n");
+                }
+                break;
+
+            case 2:
+                printf("Enter file name to search: ");
+                scanf("%29s", name);
+
+                found = 0;
+                for (int i = 0; i < n; i++) {
+                    if (strcmp(files[i], name) == 0) {
+                        found = 1;
+                        break;
+                    }
+                }
+
+                if (found)
+                    printf("File found.\n");
+                else
+                    printf("File not found.\n");
+                break;
+
+            case 3:
+                printf("Enter file name to delete: ");
+                scanf("%29s", name);
+
+                found = 0;
+                for (int i = 0; i < n; i++) {
+                    if (strcmp(files[i], name) == 0) {
+                        for (int j = i; j < n - 1; j++) {
+                            strcpy(files[j], files[j + 1]);
+                        }
+                        n--;
+                        found = 1;
+                        printf("File deleted successfully.\n");
+                        break;
+                    }
+                }
+
+                if (!found)
+                    printf("File not found.\n");
+                break;
+
+            case 4:
+                printf("\nFiles in Directory:\n");
+
+                if (n == 0) {
+                    printf("Directory is empty.\n");
+                } else {
+                    for (int i = 0; i < n; i++) {
+                        printf("%s\n", files[i]);
+                    }
+                }
+                break;
+
+            case 5:
+                return 0;
+
+            default:
+                printf("Invalid choice.\n");
+        }
+    }
+}
