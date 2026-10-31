@@ -1,0 +1,34 @@
+#include <stdio.h>
+#include <pthread.h>
+#include <unistd.h>
+
+void *task(void *arg)
+{
+    int id;
+    id = *(int *)arg;
+
+    printf("Thread %d is executing.\n", id);
+
+    pthread_exit(NULL);
+}
+
+int main()
+{
+    pthread_t t1, t2;
+    int id1 = 1, id2 = 2;
+
+    pthread_create(&t1, NULL, task, &id1);
+    pthread_create(&t2, NULL, task, &id2);
+
+    if (pthread_equal(t1, t2))
+        printf("Both threads are equal.\n");
+    else
+        printf("Both threads are different.\n");
+
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+
+    printf("Main thread: Both threads completed.\n");
+
+    return 0;
+}
