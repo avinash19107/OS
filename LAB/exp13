@@ -1,0 +1,81 @@
+
+#include <stdio.h>
+
+int main() {
+    int nb, np;
+    int block[20], process[20];
+    int allocation[20];
+
+    printf("Enter number of memory blocks: ");
+    scanf("%d", &nb);
+
+    printf("Enter size of each block:\n");
+    for (int i = 0; i < nb; i++) {
+        scanf("%d", &block[i]);
+    }
+
+    printf("Enter number of processes: ");
+    scanf("%d", &np);
+
+    printf("Enter size of each process:\n");
+    for (int i = 0; i < np; i++) {
+        scanf("%d", &process[i]);
+    }
+
+    for (int strategy = 1; strategy <= 3; strategy++) {
+        int temp[20];
+
+        for (int i = 0; i < nb; i++) {
+            temp[i] = block[i];
+        }
+
+        for (int i = 0; i < np; i++) {
+            allocation[i] = -1;
+        }
+
+        for (int i = 0; i < np; i++) {
+            int chosen = -1;
+
+            for (int j = 0; j < nb; j++) {
+                if (temp[j] >= process[i]) {
+                    if (strategy == 1) {
+                        chosen = j;
+                        break;
+                    }
+
+                    if (chosen == -1 ||
+                        (strategy == 2 && temp[j] < temp[chosen]) ||
+                        (strategy == 3 && temp[j] > temp[chosen])) {
+                        chosen = j;
+                    }
+                }
+            }
+
+            if (chosen != -1) {
+                allocation[i] = chosen;
+                temp[chosen] -= process[i];
+            }
+        }
+
+        if (strategy == 1)
+            printf("\nFirst Fit Allocation:\n");
+        else if (strategy == 2)
+            printf("\nBest Fit Allocation:\n");
+        else
+            printf("\nWorst Fit Allocation:\n");
+
+        printf("Process\tSize\tBlock\n");
+
+        for (int i = 0; i < np; i++) {
+            if (allocation[i] != -1) {
+                printf("P%d\t%d\t%d\n",
+                       i + 1, process[i], allocation[i] + 1);
+            } else {
+                printf("P%d\t%d\tNot Allocated\n",
+                       i + 1, process[i]);
+            }
+        }
+    }
+
+    return 0;
+}
