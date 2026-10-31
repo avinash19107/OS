@@ -1,0 +1,184 @@
+
+#include <stdio.h>
+#include <string.h>
+
+#define USERS 10
+#define FILES 20
+
+int main() {
+    char users[USERS][30];
+    char files[USERS][FILES][30];
+    int count[USERS] = {0};
+    int n = 0, choice, u, found;
+
+    while (1) {
+        printf("\n--- Two Level Directory ---\n");
+        printf("1. Create User\n");
+        printf("2. Create File\n");
+        printf("3. Search File\n");
+        printf("4. Delete File\n");
+        printf("5. Display Directory\n");
+        printf("6. Exit\n");
+
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                if (n >= USERS) {
+                    printf("Maximum users reached.\n");
+                    break;
+                }
+
+                printf("Enter user name: ");
+                scanf("%29s", users[n]);
+
+                found = 0;
+                for (int i = 0; i < n; i++) {
+                    if (strcmp(users[i], users[n]) == 0) {
+                        found = 1;
+                        break;
+                    }
+                }
+
+                if (found) {
+                    printf("User already exists.\n");
+                } else {
+                    count[n] = 0;
+                    n++;
+                    printf("User directory created.\n");
+                }
+                break;
+
+            case 2:
+                printf("Enter user name: ");
+                scanf("%29s", users[USERS - 1]);
+
+                u = -1;
+                for (int i = 0; i < n; i++) {
+                    if (strcmp(users[i], users[USERS - 1]) == 0) {
+                        u = i;
+                        break;
+                    }
+                }
+
+                if (u == -1) {
+                    printf("User not found.\n");
+                    break;
+                }
+
+                if (count[u] >= FILES) {
+                    printf("Directory is full.\n");
+                    break;
+                }
+
+                printf("Enter file name: ");
+                scanf("%29s", files[u][count[u]]);
+
+                found = 0;
+                for (int i = 0; i < count[u]; i++) {
+                    if (strcmp(files[u][i], files[u][count[u]]) == 0) {
+                        found = 1;
+                        break;
+                    }
+                }
+
+                if (found) {
+                    printf("File already exists.\n");
+                } else {
+                    count[u]++;
+                    printf("File created successfully.\n");
+                }
+                break;
+
+            case 3:
+                printf("Enter user name: ");
+                scanf("%29s", users[USERS - 1]);
+
+                u = -1;
+                for (int i = 0; i < n; i++) {
+                    if (strcmp(users[i], users[USERS - 1]) == 0) {
+                        u = i;
+                        break;
+                    }
+                }
+
+                if (u == -1) {
+                    printf("User not found.\n");
+                    break;
+                }
+
+                printf("Enter file name: ");
+                scanf("%29s", files[0][0]);
+
+                found = 0;
+                for (int i = 0; i < count[u]; i++) {
+                    if (strcmp(files[u][i], files[0][0]) == 0) {
+                        found = 1;
+                        break;
+                    }
+                }
+
+                if (found)
+                    printf("File found.\n");
+                else
+                    printf("File not found.\n");
+                break;
+
+            case 4:
+                printf("Enter user name: ");
+                scanf("%29s", users[USERS - 1]);
+
+                u = -1;
+                for (int i = 0; i < n; i++) {
+                    if (strcmp(users[i], users[USERS - 1]) == 0) {
+                        u = i;
+                        break;
+                    }
+                }
+
+                if (u == -1) {
+                    printf("User not found.\n");
+                    break;
+                }
+
+                printf("Enter file name: ");
+                scanf("%29s", files[0][0]);
+
+                found = 0;
+                for (int i = 0; i < count[u]; i++) {
+                    if (strcmp(files[u][i], files[0][0]) == 0) {
+                        for (int j = i; j < count[u] - 1; j++) {
+                            strcpy(files[u][j], files[u][j + 1]);
+                        }
+                        count[u]--;
+                        found = 1;
+                        printf("File deleted successfully.\n");
+                        break;
+                    }
+                }
+
+                if (!found)
+                    printf("File not found.\n");
+                break;
+
+            case 5:
+                printf("\nMaster File Directory:\n");
+
+                for (int i = 0; i < n; i++) {
+                    printf("\nUser: %s\n", users[i]);
+
+                    for (int j = 0; j < count[i]; j++) {
+                        printf("  %s\n", files[i][j]);
+                    }
+                }
+                break;
+
+            case 6:
+                return 0;
+
+            default:
+                printf("Invalid choice.\n");
+        }
+    }
+}
