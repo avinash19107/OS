@@ -1,0 +1,83 @@
+#include <stdio.h>
+
+int main()
+{
+    FILE *fp;
+    char data[100];
+    int choice;
+
+    while (1)
+    {
+        printf("\n--- File Management ---\n");
+        printf("1. Create and Write File\n");
+        printf("2. Read File\n");
+        printf("3. Append to File\n");
+        printf("4. Delete File\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+            case 1:
+                fp = fopen("sample.txt", "w");
+                if (fp == NULL)
+                {
+                    printf("Unable to create file.\n");
+                    break;
+                }
+
+                printf("Enter data: ");
+                scanf(" %[^\n]", data);
+                fprintf(fp, "%s", data);
+                fclose(fp);
+                printf("File created and written successfully.\n");
+                break;
+
+            case 2:
+                fp = fopen("sample.txt", "r");
+                if (fp == NULL)
+                {
+                    printf("File not found.\n");
+                    break;
+                }
+
+                printf("\nFile contents:\n");
+                while (fgets(data, sizeof(data), fp) != NULL)
+                    printf("%s", data);
+
+                fclose(fp);
+                break;
+
+            case 3:
+                fp = fopen("sample.txt", "a");
+                if (fp == NULL)
+                {
+                    printf("Unable to open file.\n");
+                    break;
+                }
+
+                printf("Enter data to append: ");
+                scanf(" %[^\n]", data);
+                fprintf(fp, "\n%s", data);
+                fclose(fp);
+                printf("Data appended successfully.\n");
+                break;
+
+            case 4:
+                if (remove("sample.txt") == 0)
+                    printf("File deleted successfully.\n");
+                else
+                    printf("Unable to delete file.\n");
+                break;
+
+            case 5:
+                return 0;
+
+            default:
+                printf("Invalid choice.\n");
+        }
+    }
+
+    return 0;
+}
